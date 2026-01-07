@@ -1,0 +1,31 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  githubId      String    @unique
+  name          String?
+  solanaAddress String?   @unique
+  projects      Project[]
+}
+
+model Project {
+  id              String   @id @default(cuid())
+  repoId          String   @unique
+  name            String
+  description     String?
+  url             String
+  vibeScore       Float    @default(0)
+  isBoosted       Boolean  @default(false)
+  owner           User     @relation(fields: [userId], references: [id])
+  userId          String
+  createdAt       DateTime @default(now())
+}
